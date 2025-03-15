@@ -15,9 +15,12 @@ public class DragonView : MonoBehaviour
     [SerializeField]
     private Image _profilePicture;
 
+    public string id;
+
     
     public void UpdateView(DragonModel _model)
     {
+        id = _model.Id;
         _nameLabel.text = _model.Name;
         _bioLabel.text = _model.Bio;
         _typeLabel.text = _model.Type.ToString();

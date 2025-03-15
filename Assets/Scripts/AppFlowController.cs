@@ -34,9 +34,15 @@ public class AppFlowController : MonoBehaviour
         currentPage = Instantiate(subscriptionPage, canvasRoot);
     }
     
-    public void ShowMatchPage()
+    public async void ShowMatchPage()
     {
         Destroy(currentPage);
+        bool initializeSuccess = await MatchController.Instance.Initialize();
+        if(!initializeSuccess)
+        {
+            Debug.LogError("Failed to initialize match controller.");
+            return;
+        }
         currentPage = Instantiate(matchPage, canvasRoot);
     }
 }

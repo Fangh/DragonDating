@@ -25,11 +25,11 @@ public class DragonModel
 
     public DragonModel()
     {
-        Id = "undefined";
-        Name = "undefined";
+        Id = null;
+        Name = null;
         Type = EDragonType.None;
         InterestedTypes = new []{EDragonType.None};
-        Bio = "undefined";
+        Bio = null;
     }
 
     /// <summary>
@@ -136,15 +136,17 @@ public class DragonModel
     /// <returns></returns>
     private async Task<Texture2D> ReadProfilePicture(string _dragonID)
     {
-        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.png");
+        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.jpg");
 
         //if file doesn't exist, download it from the firestorage and save it locally
         if (!File.Exists(localPath))
         {
+            Debug.Log("Profile picture not found in local storage, downloading it first from the firestorage");
             await FireStorageController.Instance.DownloadPicture(_dragonID);
         }
 
         //load the image from the local storage
+        Debug.Log("Loading the profile picture from the local storage");
         return await LoadProfilePicture(_dragonID);
     }
 
@@ -163,7 +165,7 @@ public class DragonModel
     /// <returns></returns>
     public async Task<bool> SaveProfilePicture(byte[] _textureAsBytes, string _dragonID)
     {
-        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.png");
+        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.jpg");
         Task task = File.WriteAllBytesAsync(localPath, _textureAsBytes);
         await task;
         if (!task.IsCompletedSuccessfully)
@@ -183,7 +185,7 @@ public class DragonModel
     /// <returns></returns>
     public async Task<Texture2D> LoadProfilePicture(string _dragonID)
     {
-        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.png");
+        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.jpg");
         Task<byte[]> task = File.ReadAllBytesAsync(localPath);
         await task;
         if (!task.IsCompletedSuccessfully)

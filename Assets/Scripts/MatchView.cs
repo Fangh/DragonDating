@@ -44,10 +44,15 @@ public class MatchView : MonoBehaviour
         ShowNextMatch();
     }
 
-    private void OnLikeClicked()
+    private async void OnLikeClicked()
     {
         //send a new match request for the current match
-
+        bool updateMatchSuccess = await MatchController.Instance.UpdateMatch(currentMatch.id);
+        if(!updateMatchSuccess)
+        {
+            Debug.LogError("Failed to update match.");
+            return;
+        }
         //then show the next match
         ShowNextMatch();
     }

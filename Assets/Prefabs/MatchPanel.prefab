@@ -622,7 +622,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6039713681962342885}
-  - component: {fileID: 6617649430658319234}
+  - component: {fileID: 8861852277814677256}
   m_Layer: 5
   m_Name: MatchPanel
   m_TagString: Untagged
@@ -651,7 +651,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -249.99998}
   m_SizeDelta: {x: 0, y: -500.00003}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &6617649430658319234
+--- !u!114 &8861852277814677256
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -660,7 +660,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8551464203514250313}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6aa1492b1eac47ff9ce4eafb657aa17, type: 3}
+  m_Script: {fileID: 11500000, guid: 09eea52506eae4db3a893cbdb958f086, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dragonCardRoot: {fileID: 1549890681363321784}

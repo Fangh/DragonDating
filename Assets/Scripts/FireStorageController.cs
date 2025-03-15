@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using Firebase.Storage;
+using System.IO;
 
 public class FireStorageController : MonoBehaviour
 {
@@ -60,11 +61,11 @@ public class FireStorageController : MonoBehaviour
         byte[] bytes = _texture.GetRawTextureData();
         Task<StorageMetadata> task = fileRef.PutBytesAsync(bytes);
         await task;
-        
-        if (task.IsFaulted || task.IsCanceled) 
+
+        if (!task.IsCompletedSuccessfully)
         {
-            // Uh-oh, an error occurred!
-            Debug.LogError($"Error uploading. {task.Exception.Message}");
+            Debug.LogError($"File upload error.");
+            Debug.LogException(task.Exception);
             return false;
         }
 
@@ -81,19 +82,24 @@ public class FireStorageController : MonoBehaviour
     public async Task<string> DownloadPicture(string _dragonID)
     {
         StorageReference fileRef = storage.RootReference.Child($"{_dragonID}/profilePicture.jpg");
-        
+
+        Debug.Log($"trying to download the profile picture from the firestorage at {_dragonID}/profilePicture.jpg");
+
         // Create local filesystem URL
-        string localUrl = $"file:///local/{_dragonID}/profilePicture.jpg";
+        string path = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.jpg");
 
         // Download to the local filesystem
-        Task task = fileRef.GetFileAsync(localUrl);
+        Task task = fileRef.GetFileAsync(path);
         await task;
 
-        if (!task.IsFaulted && !task.IsCanceled) 
-            return localUrl;
-        
-        Debug.LogError($"File download error. {task.Exception.Message}");
-        return null;
+        if (!task.IsCompletedSuccessfully)
+        {
+            Debug.LogError($"File download error.");
+            Debug.LogException(task.Exception);
+            return null;
+        }
+        Debug.Log($"Finished downloading picture of {_dragonID} at {path}");
+        return path;
     }
 
 }
