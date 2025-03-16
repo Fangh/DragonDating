@@ -1,0 +1,3 @@
+node_modules/
+*.local
+dragondating-firebase-adminsdk-service-account.json

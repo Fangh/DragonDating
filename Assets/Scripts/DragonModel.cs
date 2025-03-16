@@ -105,10 +105,11 @@ public class DragonModel
         DocumentSnapshot snapshot = task.Result;
         DragonModel model = snapshot.ConvertTo<DragonModel>();
         this.Name = model.Name;
+        this.Bio = model.Bio;
         this.Type = model.Type;
         this.InterestedTypes = model.InterestedTypes;
         this.profilPicture = await ReadProfilePicture(this.Id);
-        Debug.Log($"Dragon {this.Id} has been downloaded from Firebase and is ready to be used in the app");
+        //Debug.Log($"Dragon {this.Id} has been downloaded from Firebase and is ready to be used in the app");
         return true;
     }
 
@@ -147,7 +148,7 @@ public class DragonModel
         }
 
         //load the image from the local storage
-        Debug.Log($"Loading the profile picture of {_dragonID} from the local storage");
+        //Debug.Log($"Loading the profile picture of {_dragonID} from the local storage");
         return await LoadProfilePicture(_dragonID);
     }
 
