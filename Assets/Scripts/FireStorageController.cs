@@ -31,7 +31,7 @@ public class FireStorageController : MonoBehaviour
     /// <param name="_dragonID"></param>
     public async Task<bool> UploadPicture(string _dragonID, string _filePath)
     {
-        StorageReference fileRef = storage.RootReference.Child($"{_dragonID}/profilePicture.jpg");
+        StorageReference fileRef = storage.RootReference.Child($"{_dragonID}/profilePicture.png");
         
         Task<StorageMetadata> task = fileRef.PutFileAsync(_filePath);
         await task;
@@ -57,8 +57,8 @@ public class FireStorageController : MonoBehaviour
     /// <returns></returns>
     public async Task<bool> UploadPicture(string _dragonID, Texture2D _texture)
     {
-        StorageReference fileRef = storage.RootReference.Child($"{_dragonID}/profilePicture.jpg");
-        byte[] bytes = _texture.GetRawTextureData();
+        StorageReference fileRef = storage.RootReference.Child($"{_dragonID}/profilePicture.png");
+        byte[] bytes = _texture.EncodeToPNG();
         Task<StorageMetadata> task = fileRef.PutBytesAsync(bytes);
         await task;
 
@@ -69,8 +69,7 @@ public class FireStorageController : MonoBehaviour
             return false;
         }
 
-        // Metadata contains file metadata such as size, content-type, and download URL.
-        Debug.Log("Finished uploading...");
+        Debug.Log($"Finished uploading profile picture of Dragon {_dragonID}");
         return true;
     }
 
@@ -81,15 +80,21 @@ public class FireStorageController : MonoBehaviour
     /// <returns></returns>
     public async Task<string> DownloadPicture(string _dragonID)
     {
-        StorageReference fileRef = storage.RootReference.Child($"{_dragonID}/profilePicture.jpg");
+        StorageReference fileRef = storage.RootReference.Child($"{_dragonID}/profilePicture.png");
 
-        Debug.Log($"trying to download the profile picture from the firestorage at {_dragonID}/profilePicture.jpg");
+        Debug.Log($"trying to download the profile picture from the firestorage at {_dragonID}/profilePicture.png");
 
         // Create local filesystem URL
-        string path = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.jpg");
+        string destinationPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.png");
+
+        // Create the directory if it doesn't exist
+        if (!Directory.Exists(Path.GetDirectoryName(destinationPath)))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+        }
 
         // Download to the local filesystem
-        Task task = fileRef.GetFileAsync(path);
+        Task task = fileRef.GetFileAsync(destinationPath);
         await task;
 
         if (!task.IsCompletedSuccessfully)
@@ -98,8 +103,8 @@ public class FireStorageController : MonoBehaviour
             Debug.LogException(task.Exception);
             return null;
         }
-        Debug.Log($"Finished downloading picture of {_dragonID} at {path}");
-        return path;
+        Debug.Log($"Finished downloading picture of {_dragonID} at {destinationPath}");
+        return destinationPath;
     }
 
 }

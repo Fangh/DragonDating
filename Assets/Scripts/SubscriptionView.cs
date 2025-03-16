@@ -16,7 +16,7 @@ public class SubscriptionView : MonoBehaviour
     [SerializeField] private Button pictureButton;
     [SerializeField] private Button confirmButton;
 
-    private Texture2D userPicture = null;
+    public Texture2D userPicture = null;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void OnEnable()
@@ -39,11 +39,11 @@ public class SubscriptionView : MonoBehaviour
             Debug.LogWarning("User hasn't fill all the values in the subscription fields.");
             return;
         }
-        
+
         DragonModel userDragon = await DragonController.Instance.CreateNewDragon(
             nameInputField.text
             , bioInputField.text
-            , GetSelectedDragonTypes(typeDropdown.value).FirstOrDefault()
+            , GetSelectedDragonTypes(typeDropdown.value + 1).FirstOrDefault() //+1 because the first value is "None"
             , GetSelectedDragonTypes(interestDropdown.value).ToArray()
             , userPicture);
 
@@ -82,13 +82,13 @@ public class SubscriptionView : MonoBehaviour
         {
             userPicture = _texture;
             pictureButton.GetComponent<Image>().sprite = Sprite.Create(userPicture, new Rect(0, 0, userPicture.width, userPicture.height), Vector2.zero);
-            Debug.Log("User has changed their pictures");
+            //Debug.Log($"User has changed their pictures for {userPicture.name}");
         });
     }
 
     private void PickImage(Action<Texture2D> _callback)
     {
-        NativeGallery.GetImageFromGallery((path) =>
+        NativeGallery.GetImageFromGallery(async (path) =>
         {
             Debug.Log("Image path: " + path);
             if (path == null)
@@ -98,11 +98,15 @@ public class SubscriptionView : MonoBehaviour
             }
 
             // Create Texture from selected image
-            Texture2D texture = NativeGallery.LoadImageAtPath(path, 1024, false, false);
+            Texture2D texture = await NativeGallery.LoadImageAtPathAsync(path, -1, false);
             if (texture == null)
             {
                 Debug.Log("Couldn't load texture from " + path);
                 return;
+            }
+            else
+            {
+                Debug.Log($"texture width = {texture.width}");
             }
 
             _callback?.Invoke(texture);

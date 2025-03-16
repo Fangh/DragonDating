@@ -893,7 +893,7 @@ MonoBehaviour:
   canvasRoot: {fileID: 64903572}
   loginPage: {fileID: 1667124219694121434, guid: d2c50ed3c5bc6448e9bc4870c20a8525, type: 3}
   subscriptionPage: {fileID: 5600781972195902111, guid: 76265cbd433e94c2293ceadba03f61db, type: 3}
-  matchPage: {fileID: 0}
+  matchPage: {fileID: 8551464203514250313, guid: f3b405fec7ab343c393e507b397f4266, type: 3}
 --- !u!1 &2110478790
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,9 +11,11 @@ public class MatchController : MonoBehaviour
     public static MatchController Instance { get; private set; }
 
     /// <summary>
-    /// Called when all the dragons online have been filtered for the current user
+    /// The list of all dragons that are interested in the current user type and that the current user is interested in
     /// </summary>
-    public event Action<List<DragonModel>> OnPotentialMatchesFiltered;
+    public List<DragonModel> filteredDragons;
+
+
     private void Awake()
     {
         Instance = this;
@@ -37,15 +39,16 @@ public class MatchController : MonoBehaviour
 
         EDragonType currentUserType = DragonController.Instance.currentDragon.Type;
         EDragonType[] currentUserInterestedTypes = DragonController.Instance.currentDragon.InterestedTypes;
+        filteredDragons = FilterDragons(allDragons, currentUserType, currentUserInterestedTypes);
+        Debug.Log("There are " + filteredDragons.Count + " dragons that are interested in the current user type and that the current user is interested in");
 
-        List<DragonModel> filteredDragons = FilterDragons(allDragons, currentUserType, currentUserInterestedTypes);
-
-        OnPotentialMatchesFiltered?.Invoke(filteredDragons);
+        Debug.Log("Match Controller Initialized");
         return true;
     }
 
     /// <summary>
     /// Filter dragons based on the current user's type and interests
+    /// Also filter out the current user from the list
     /// </summary>
     /// <param name="allDragons">List of all dragons</param>
     /// <param name="currentUserType">Current user's dragon type</param>
@@ -56,6 +59,7 @@ public class MatchController : MonoBehaviour
         return allDragons
             .Where(dragon => dragon.InterestedTypes.Contains(currentUserType))
             .Where(dragon => currentUserInterestedTypes.Contains(dragon.Type))
+            .Where(dragon => dragon.Id != AccountController.Instance.GetAccountID())
             .ToList();
     }
 

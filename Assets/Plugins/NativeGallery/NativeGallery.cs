@@ -788,7 +788,7 @@ public static class NativeGallery
 		string extension = Path.GetExtension( imagePath ).ToLowerInvariant();
 		TextureFormat format = ( extension == ".jpg" || extension == ".jpeg" ) ? TextureFormat.RGB24 : TextureFormat.RGBA32;
 
-		Texture2D result = new Texture2D( 2, 2, format, generateMipmaps, linearColorSpace );
+		Texture2D result = new Texture2D(maxSize, maxSize, format, generateMipmaps, linearColorSpace );
 
 		try
 		{
@@ -799,6 +799,10 @@ public static class NativeGallery
 				Object.DestroyImmediate( result );
 				return null;
 			}
+			else
+			{
+				Debug.Log("Image loaded successfully");
+            }
 		}
 		catch( Exception e )
 		{
@@ -861,7 +865,12 @@ public static class NativeGallery
 				Debug.LogWarning( "Couldn't use UnityWebRequest to load image, falling back to LoadImage: " + www.error );
 			}
 			else
+			{
 				result = DownloadHandlerTexture.GetContent( www );
+
+                Debug.Log("Image loaded successfully");
+                Debug.Log("Image width: " + result.width + ", height: " + result.height);
+            }
 		}
 
 		if( !result ) // Fallback to Texture2D.LoadImage if something goes wrong
@@ -880,6 +889,11 @@ public static class NativeGallery
 					Object.DestroyImmediate( result );
 					return null;
 				}
+				else
+				{
+                    Debug.Log("Image loaded successfully");
+					Debug.Log("Image width: " + result.width + ", height: " + result.height);
+                }
 			}
 			catch( Exception e )
 			{

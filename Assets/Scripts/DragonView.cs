@@ -17,7 +17,10 @@ public class DragonView : MonoBehaviour
 
     public string id;
 
-    
+    /// <summary>
+    /// Update the view (name, bio, type and picture) with the data of the model
+    /// </summary>
+    /// <param name="_model"></param>
     public void UpdateView(DragonModel _model)
     {
         id = _model.Id;

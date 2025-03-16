@@ -125,11 +125,13 @@ public class DragonController : MonoBehaviour
         }
 
         QuerySnapshot snapshot = task.Result;
-
         List<DragonModel> dragons = new();
+        Debug.Log("Found " + snapshot.Count + " dragons in Firestore");
         foreach (DocumentSnapshot document in snapshot.Documents)
         {
-            dragons.Add(document.ConvertTo<DragonModel>());
+            DragonModel model = new DragonModel(document.Id);
+            await model.Read();
+            dragons.Add(model);
         }
         return dragons;
     }

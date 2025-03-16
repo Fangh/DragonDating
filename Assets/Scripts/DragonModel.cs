@@ -108,6 +108,7 @@ public class DragonModel
         this.Type = model.Type;
         this.InterestedTypes = model.InterestedTypes;
         this.profilPicture = await ReadProfilePicture(this.Id);
+        Debug.Log($"Dragon {this.Id} has been downloaded from Firebase and is ready to be used in the app");
         return true;
     }
 
@@ -136,23 +137,23 @@ public class DragonModel
     /// <returns></returns>
     private async Task<Texture2D> ReadProfilePicture(string _dragonID)
     {
-        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.jpg");
+        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.png");
 
         //if file doesn't exist, download it from the firestorage and save it locally
         if (!File.Exists(localPath))
         {
-            Debug.Log("Profile picture not found in local storage, downloading it first from the firestorage");
+            Debug.Log($"Profile picture of {_dragonID} not found in local storage, downloading it first from the firestorage");
             await FireStorageController.Instance.DownloadPicture(_dragonID);
         }
 
         //load the image from the local storage
-        Debug.Log("Loading the profile picture from the local storage");
+        Debug.Log($"Loading the profile picture of {_dragonID} from the local storage");
         return await LoadProfilePicture(_dragonID);
     }
 
     public async Task<bool> SaveProfilePicture(Texture2D _texture, string _dragonID)
     {
-        Task<bool> task = SaveProfilePicture(_texture.GetRawTextureData(), _dragonID);
+        Task<bool> task = SaveProfilePicture(_texture.EncodeToPNG(), _dragonID);
         await task;
         return task.Result;
     }
@@ -165,7 +166,13 @@ public class DragonModel
     /// <returns></returns>
     public async Task<bool> SaveProfilePicture(byte[] _textureAsBytes, string _dragonID)
     {
-        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.jpg");
+        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.png");
+
+        if(!Directory.Exists(Path.GetDirectoryName(localPath)))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(localPath));
+        }
+
         Task task = File.WriteAllBytesAsync(localPath, _textureAsBytes);
         await task;
         if (!task.IsCompletedSuccessfully)
@@ -185,7 +192,7 @@ public class DragonModel
     /// <returns></returns>
     public async Task<Texture2D> LoadProfilePicture(string _dragonID)
     {
-        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.jpg");
+        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.png");
         Task<byte[]> task = File.ReadAllBytesAsync(localPath);
         await task;
         if (!task.IsCompletedSuccessfully)
@@ -196,7 +203,7 @@ public class DragonModel
         }
 
         Texture2D tex = new(1024, 1024);
-        tex.LoadRawTextureData(task.Result);
+        tex.LoadImage(task.Result);
         return tex;
     }
 }

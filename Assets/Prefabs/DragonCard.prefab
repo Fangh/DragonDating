@@ -547,9 +547,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55431040b08fa4651b9650e96ad1156e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nameLabel: {fileID: 0}
-  _bioLabel: {fileID: 0}
-  _typeLabel: {fileID: 0}
+  _nameLabel: {fileID: 8600019892865242303}
+  _bioLabel: {fileID: 6997916261887229186}
+  _typeLabel: {fileID: 7233863737021357313}
+  _profilePicture: {fileID: 6114093465199265339}
+  id: 
 --- !u!1 &7913313270113117081
 GameObject:
   m_ObjectHideFlags: 0
