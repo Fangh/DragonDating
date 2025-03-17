@@ -11,10 +11,12 @@ public class MiniatureController : MonoBehaviour
     [SerializeField] private Transform miniatureParent;
 
     private GameObject currentMiniature;
-    
+    public bool isMiniatureSpawned = false;
+
     private void Awake()
     {
         Instance = this;
+        isMiniatureSpawned = false;
     }
     
     public void DestroyCurrentMiniature()
@@ -23,19 +25,28 @@ public class MiniatureController : MonoBehaviour
         {
             Destroy(currentMiniature);
         }
+        isMiniatureSpawned = false;
     }
 
-    public async Task<GameObject> SpawnMiniature(DragonModel _model)
+
+    /// <summary>
+    /// Set the position of the spawned miniature to the given position and make it visible.
+    /// </summary>
+    /// <param name="_position"></param>
+    public void SpawnMiniatureAt(Vector3 _position)
     {
-        return await SpawnMiniature(_model.miniatureGLBLocalPath);
+        currentMiniature.transform.position = _position;
+        currentMiniature.gameObject.SetActive(true);
+        isMiniatureSpawned = true;
+        Debug.Log($"Miniature has been spawned at {_position}");
     }
 
     /// <summary>
-    /// Load the GLB 3D Model as a file from the local storage in the device and spawn it into the scene.
+    /// Load the GLB 3D Model as a file from the local storage in the device and load it into the scene disblaed and at the origin of the scene.
     /// </summary>
     /// <param name="_localPath">The path of the 3DModel in the local storage</param>
     /// <returns>The gameobject of the spawned miniature</returns>
-    public async Task<GameObject> SpawnMiniature(string _localPath)
+    public async Task<GameObject> LoadMiniature(string _localPath)
     {
         Task<byte[]> readFromLocalTask = File.ReadAllBytesAsync(_localPath);
         try
@@ -60,8 +71,9 @@ public class MiniatureController : MonoBehaviour
             Debug.LogException(e);
             throw;
         }
-
         currentMiniature = miniatureParent.GetChild(0).gameObject;
+        currentMiniature.transform.position = Vector3.zero;
+        currentMiniature.gameObject.SetActive(false);
         return currentMiniature;
     }
 }

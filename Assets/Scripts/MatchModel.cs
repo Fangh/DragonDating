@@ -1,6 +1,5 @@
 using Firebase.Firestore;
 using System;
-using UnityEngine;
 
 [FirestoreData]
 public class MatchModel

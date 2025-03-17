@@ -1,8 +1,6 @@
 using Firebase.Firestore;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -142,8 +140,20 @@ public class DragonController : MonoBehaviour
         }
         return dragons;
     }
-    
-    
+
+
+    /// <summary>
+    /// Load the AR Scene & load the miniature hidden.
+    /// </summary>
+    /// <param name="_glbPath"></param>
+    public async void SetMiniatureToSpawn(string _glbPath)
+    {
+        await AppFlowController.Instance.ToggleARScene(true);
+        await MiniatureController.Instance.LoadMiniature(_glbPath);
+        Debug.Log($"Miniature of {_glbPath} has been loaded and ready to spawn");
+    }
+
+
 
 
 }

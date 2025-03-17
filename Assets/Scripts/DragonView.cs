@@ -1,7 +1,5 @@
-using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DragonView : MonoBehaviour
@@ -33,10 +31,9 @@ public class DragonView : MonoBehaviour
         profilePictureButton.onClick.RemoveAllListeners();
     }
     
-    private async void OnProfilePictureClicked()
+    private void OnProfilePictureClicked()
     {
-        await MiniatureController.Instance.SpawnMiniature(miniaturePath);
-        Debug.Log($"Miniature of {id} has been spawned");
+        DragonController.Instance.SetMiniatureToSpawn(miniaturePath);
     }
 
     /// <summary>

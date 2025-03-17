@@ -1,5 +1,6 @@
-using System;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AppFlowController : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class AppFlowController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -44,5 +46,18 @@ public class AppFlowController : MonoBehaviour
             return;
         }
         currentPage = Instantiate(matchPage, canvasRoot);
+    }
+
+    public async Task<bool> ToggleARScene(bool _toggle)
+    {
+        if(_toggle)
+        {
+            await SceneManager.LoadSceneAsync("ARScene");
+        }
+        else
+        {
+            await SceneManager.UnloadSceneAsync("ARScene");
+        }
+        return true;
     }
 }

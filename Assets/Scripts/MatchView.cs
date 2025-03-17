@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -78,7 +76,6 @@ public class MatchView : MonoBehaviour
             Debug.LogWarning("No more potential matches.");
             return;
         }
-        MiniatureController.Instance.DestroyCurrentMiniature(); //destroy the current miniature
         currentMatch.gameObject.SetActive(false); //hide the current match
         currentMatch = potentialMatches.Dequeue(); //get the next match
         currentMatch.gameObject.SetActive(true); //show the next match
