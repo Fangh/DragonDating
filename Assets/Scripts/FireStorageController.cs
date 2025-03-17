@@ -106,5 +106,40 @@ public class FireStorageController : MonoBehaviour
         Debug.Log($"Finished downloading picture of {_dragonID} at {destinationPath}");
         return destinationPath;
     }
+    
+    
+    /// <summary>
+    /// Download the GLB 3D model of a dragon and save it in the local storage
+    /// </summary>
+    /// <param name="_dragonID"></param>
+    /// <returns></returns>
+    public async Task<string> Download3DModel(string _dragonID)
+    {
+        StorageReference fileRef = storage.RootReference.Child($"{_dragonID}/model.glb");
+
+        Debug.Log($"trying to download the GLB 3D Model from the firestorage at {_dragonID}/model.glb");
+
+        // Create local filesystem URL
+        string destinationPath = Path.Combine(Application.persistentDataPath, _dragonID, "model.glb");
+
+        // Create the directory if it doesn't exist
+        if (!Directory.Exists(Path.GetDirectoryName(destinationPath)))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+        }
+
+        // Download to the local filesystem
+        Task task = fileRef.GetFileAsync(destinationPath);
+        await task;
+
+        if (!task.IsCompletedSuccessfully)
+        {
+            Debug.LogError($"File download error.");
+            Debug.LogException(task.Exception);
+            return null;
+        }
+        Debug.Log($"Finished downloading GLB 3D Model of {_dragonID} at {destinationPath}");
+        return destinationPath;
+    }
 
 }

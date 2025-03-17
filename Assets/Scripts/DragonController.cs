@@ -66,6 +66,8 @@ public class DragonController : MonoBehaviour
             }
 
 
+            //Setting the Status to AccountStarted just before updating the firestore because now the process of profile creation is finished
+            newDragon.Status = EStatus.AccountStarted;
             Debug.Log("Profile Picture has been uploaded & saved locally, now uploading everything to firebase...");
             bool createDocResult = await newDragon.Create();
             if (!createDocResult)
@@ -131,10 +133,18 @@ public class DragonController : MonoBehaviour
         {
             DragonModel model = new DragonModel(document.Id);
             await model.Read();
+            //Do not download the dragon if the profile is not completed
+            if(model.Status != EStatus.AccountCompleted)
+            {
+                continue;
+            }
             dragons.Add(model);
         }
         return dragons;
     }
+    
+    
+
 
 }
 

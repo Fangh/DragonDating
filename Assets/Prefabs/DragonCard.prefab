@@ -350,6 +350,7 @@ GameObject:
   - component: {fileID: 7104136466034860434}
   - component: {fileID: 6114093465199265339}
   - component: {fileID: 670269897717388001}
+  - component: {fileID: 3321259576928802492}
   m_Layer: 5
   m_Name: DragonCard.Picture
   m_TagString: Untagged
@@ -428,6 +429,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 2
   m_AspectRatio: 1
+--- !u!114 &3321259576928802492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7108146536222368387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 6114093465199265339}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7839423607837536712
 GameObject:
   m_ObjectHideFlags: 0
@@ -547,10 +592,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55431040b08fa4651b9650e96ad1156e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _nameLabel: {fileID: 8600019892865242303}
-  _bioLabel: {fileID: 6997916261887229186}
-  _typeLabel: {fileID: 7233863737021357313}
-  _profilePicture: {fileID: 6114093465199265339}
+  nameLabel: {fileID: 8600019892865242303}
+  bioLabel: {fileID: 6997916261887229186}
+  typeLabel: {fileID: 7233863737021357313}
+  profilePicture: {fileID: 6114093465199265339}
+  profilePictureButton: {fileID: 3321259576928802492}
   id: 
 --- !u!1 &7913313270113117081
 GameObject:

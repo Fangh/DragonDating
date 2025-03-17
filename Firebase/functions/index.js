@@ -21,15 +21,18 @@ adminSDK.initializeApp();
 exports.generate3DModelForNewUser = onDocumentWritten({region: functionsRegion, document: "dragons/{dragonId}"},async (event) => 
 {
     const dragonId = event.params.dragonId;
+    const firestore = adminSDK.firestore();
     logger.log(`Start to Generate a 3D model for : ${dragonId}`);
     logger.log(`First we get the profile picture URL for user : ${dragonId}`);
     const profilePictureURL = await getProfilePictureURL(dragonId);
     logger.log(`Second we start the IA with the task to generate a 3D model for user : ${dragonId} with profile picture URL : ${profilePictureURL}`);
     const taskId = await startImageTo3DTask(profilePictureURL);
     logger.log(`Third we wait for the task to complete with task ID : ${taskId}`);        
-    const modelUrl = await waitForTaskCompletion(taskId);
+    const modelUrl = await waitForTaskCompletion(taskId); //this is a long operation. It can take up to a couple of minutes
     logger.log(`Fourth we upload the GLB version to Firestore in user folder for user : ${dragonId} with model URL : ${modelUrl}`);        
     await uploadGLBToFirestore(dragonId, modelUrl);
+    logger.log(`Then we update the dragon document with new status for user ${dragonId}`);
+    await firestore.collection('dragons').doc(dragonId).update({ Status: 100 });
 });
 
 // Function to get the user's profile picture URL from Firestore
@@ -78,7 +81,7 @@ async function waitForTaskCompletion(taskId)
         {
             const taskResponse = await axios.get(`https://api.meshy.ai/openapi/v1/image-to-3d/${taskId}`, { headers });
             taskStatus = taskResponse.data.status;
-            logger.log(`Task Status: ${taskStatus}`);
+            logger.log(`Task (${taskId}) Status: ${taskStatus}`);
             if (taskStatus === 'SUCCEEDED') 
             {
                 modelUrl = taskResponse.data.model_urls.glb;

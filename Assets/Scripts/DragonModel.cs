@@ -20,8 +20,13 @@ public class DragonModel
 
     [FirestoreProperty]
     public string Bio { get; set; }
+    
+    [FirestoreProperty]
+    public EStatus Status { get; set; }
 
     public Texture2D profilPicture;
+    
+    public string miniatureGLBLocalPath;
 
     public DragonModel()
     {
@@ -108,7 +113,14 @@ public class DragonModel
         this.Bio = model.Bio;
         this.Type = model.Type;
         this.InterestedTypes = model.InterestedTypes;
-        this.profilPicture = await ReadProfilePicture(this.Id);
+        this.Status = model.Status;
+        
+        if(Status >= EStatus.AccountStarted)
+            this.profilPicture = await ReadProfilePicture(this.Id);
+        
+        if(Status >= EStatus.AccountCompleted)
+            this.miniatureGLBLocalPath = await Read3DMiniature(this.Id);
+        
         //Debug.Log($"Dragon {this.Id} has been downloaded from Firebase and is ready to be used in the app");
         return true;
     }
@@ -151,6 +163,27 @@ public class DragonModel
         //Debug.Log($"Loading the profile picture of {_dragonID} from the local storage");
         return await LoadProfilePicture(_dragonID);
     }
+    
+    /// <summary>
+    /// Check first if the GLB 3D Model is already in the local storage, if not, download it from the Firestore.
+    /// </summary>
+    /// <param name="_dragonID"></param>
+    /// <returns>The path in the local storage where the GLB is stored</returns>
+    private async Task<string> Read3DMiniature(string _dragonID)
+    {
+        string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "model.glb");
+
+        //if file doesn't exist, download it from the firestorage and save it locally
+        if (!File.Exists(localPath))
+        {
+            Debug.Log($"model.glb of {_dragonID} not found in local storage, downloading it first from the firestorage");
+            await FireStorageController.Instance.Download3DModel(_dragonID);
+        }
+
+        //load the image from the local storage
+        //Debug.Log($"Loading the profile picture of {_dragonID} from the local storage");
+        return localPath;
+    }
 
     public async Task<bool> SaveProfilePicture(Texture2D _texture, string _dragonID)
     {
@@ -187,11 +220,11 @@ public class DragonModel
     }
 
     /// <summary>
-    /// Load the profile picture from the local storage in the device.
+    /// Load the profile picture as a file from the local storage in the device into a Texture3D in the memory.
     /// </summary>
     /// <param name="_dragonID"></param>
     /// <returns></returns>
-    public async Task<Texture2D> LoadProfilePicture(string _dragonID)
+    private async Task<Texture2D> LoadProfilePicture(string _dragonID)
     {
         string localPath = Path.Combine(Application.persistentDataPath, _dragonID, "profilePicture.png");
         Task<byte[]> task = File.ReadAllBytesAsync(localPath);
@@ -207,6 +240,8 @@ public class DragonModel
         tex.LoadImage(task.Result);
         return tex;
     }
+    
+    
 }
 
 public enum EDragonType
@@ -222,4 +257,11 @@ public enum EDragonType
     Light = 8,
     Darkness = 9,
     Storm = 10
+}
+
+public enum EStatus
+{
+    AccountNotCompleted = 0, //A profile have this status only when the user have a Firebase Account but no profile in the Firestore
+    AccountStarted = 1, //A profile have this status only when the user have completed all the fields of the profile and the Firestore document is ready
+    AccountCompleted = 100, //A profile have this status only when the Meshy API have created their 3D model and stored in the Firestorage
 }

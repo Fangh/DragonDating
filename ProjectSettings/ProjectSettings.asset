@@ -165,7 +165,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.dragndrop.dragondating
     Standalone: com.Unity-Technologies.com.unity.template.urp-blank
-    iPhone: com.Unity-Technologies.com.unity.template.urp-blank
+    iPhone: com.dragndrop.dragondating
   buildNumber:
     Standalone: 0
     VisionOS: 0
