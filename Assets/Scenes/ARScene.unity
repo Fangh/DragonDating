@@ -427,7 +427,7 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 0, g: 0.91849303, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -674,7 +674,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1418545845}
   - component: {fileID: 1418545851}
-  - component: {fileID: 1418545850}
   - component: {fileID: 1418545849}
   - component: {fileID: 1418545848}
   - component: {fileID: 1418545847}
@@ -879,14 +878,6 @@ MonoBehaviour:
   m_LightEstimation: 0
   m_FacingDirection: 1
   m_RenderMode: 0
---- !u!81 &1418545850
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1418545844}
-  m_Enabled: 1
 --- !u!20 &1418545851
 Camera:
   m_ObjectHideFlags: 0
@@ -949,6 +940,7 @@ GameObject:
   - component: {fileID: 1481055252}
   - component: {fileID: 1481055251}
   - component: {fileID: 1481055253}
+  - component: {fileID: 1481055254}
   m_Layer: 0
   m_Name: XR Origin
   m_TagString: Untagged
@@ -1006,6 +998,23 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_RaycastPrefab: {fileID: 0}
+--- !u!114 &1481055254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1481055250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1760703bbd54c04488a8d10600262ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <trackablesChanged>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  m_PlanePrefab: {fileID: 0}
+  m_DetectionMode: 1
 --- !u!1 &1795369742
 GameObject:
   m_ObjectHideFlags: 0
@@ -1018,7 +1027,6 @@ GameObject:
   - component: {fileID: 1795369746}
   - component: {fileID: 1795369745}
   - component: {fileID: 1795369744}
-  - component: {fileID: 1795369747}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -1090,13 +1098,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1795369747}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 268738030}
+        m_TargetAssemblyTypeName: ARController, Assembly-CSharp
+        m_MethodName: CloseAR
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1140,18 +1148,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1795369742}
   m_CullTransparentMesh: 1
---- !u!114 &1795369747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1795369742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6158fa58a3b4cde4e9f027bde034baed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1947535376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,7 +1254,7 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 1, g: 0.25737438, b: 0, a: 1}
-  m_Intensity: 2
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

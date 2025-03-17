@@ -42,15 +42,17 @@ async function getProfilePictureURL(dragonId)
 }
 
 // Function to start the Image to 3D task
+//https://docs.meshy.ai/api/image-to-3d
 async function startImageTo3DTask(profilePictureURL) 
 {
     const headers = { Authorization: `Bearer ${MESHY_API_KEY.value()}` };
     const payload = 
     {
         image_url: profilePictureURL,
-        enable_pbr: true,
+        enable_pbr: false,
         should_remesh: true,
-        should_texture: true
+        should_texture: true,
+        texture_prompt: 'a dragon, mobile game, 3d model, fantasy, cartoon',
     };
 
     try 

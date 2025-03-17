@@ -33,9 +33,10 @@ public class MiniatureController : MonoBehaviour
     /// Set the position of the spawned miniature to the given position and make it visible.
     /// </summary>
     /// <param name="_position"></param>
+    [ContextMenu("Force Spawn")]
     public void SpawnMiniatureAt(Vector3 _position)
     {
-        currentMiniature.transform.position = _position;
+        miniatureParent.transform.position = _position;
         currentMiniature.gameObject.SetActive(true);
         isMiniatureSpawned = true;
         Debug.Log($"Miniature has been spawned at {_position}");
@@ -72,7 +73,7 @@ public class MiniatureController : MonoBehaviour
             throw;
         }
         currentMiniature = miniatureParent.GetChild(0).gameObject;
-        currentMiniature.transform.position = Vector3.zero;
+        currentMiniature.transform.localPosition = Vector3.zero;
         currentMiniature.gameObject.SetActive(false);
         return currentMiniature;
     }

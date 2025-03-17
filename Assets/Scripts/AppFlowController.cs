@@ -52,11 +52,13 @@ public class AppFlowController : MonoBehaviour
     {
         if(_toggle)
         {
-            await SceneManager.LoadSceneAsync("ARScene");
+            currentPage.gameObject.SetActive(false);
+            await SceneManager.LoadSceneAsync("ARScene", LoadSceneMode.Additive);
         }
         else
         {
             await SceneManager.UnloadSceneAsync("ARScene");
+            currentPage.gameObject.SetActive(true);
         }
         return true;
     }
