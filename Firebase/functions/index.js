@@ -1,6 +1,6 @@
 // This is the main file that contains the cloud functions
 
-const {onDocumentWritten} = require("firebase-functions/v2/firestore");
+const {onDocumentWritten, onDocumentCreated} = require("firebase-functions/v2/firestore");
 const logger = require("firebase-functions/logger");
 const axios = require('axios');
 const adminSDK = require("firebase-admin");
@@ -18,7 +18,7 @@ adminSDK.initializeApp();
 // Then it will wait for Mesh AI API to process the 3D model
 // Then it will download the GLB version
 // Then it will upload the GLB version to Firestore in the user folder
-exports.generate3DModelForNewUser = onDocumentWritten({region: functionsRegion, document: "dragons/{dragonId}"},async (event) => 
+exports.generate3DModelForNewUser = onDocumentCreated({region: functionsRegion, document: "dragons/{dragonId}"},async (event) => 
 {
     const dragonId = event.params.dragonId;
     const firestore = adminSDK.firestore();

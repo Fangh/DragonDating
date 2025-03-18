@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MatchController : MonoBehaviour
@@ -38,7 +39,7 @@ public class MatchController : MonoBehaviour
 
         EDragonType currentUserType = DragonController.Instance.currentDragon.Type;
         EDragonType[] currentUserInterestedTypes = DragonController.Instance.currentDragon.InterestedTypes;
-        filteredDragons = FilterDragons(allDragons, currentUserType, currentUserInterestedTypes);
+        filteredDragons = await FilterDragons(allDragons, currentUserType, currentUserInterestedTypes);
         Debug.Log("There are " + filteredDragons.Count + " dragons that are interested in the current user type and that the current user is interested in");
 
         Debug.Log("Match Controller Initialized");
@@ -48,18 +49,38 @@ public class MatchController : MonoBehaviour
     /// <summary>
     /// Filter dragons based on the current user's type and interests
     /// Also filter out the current user from the list
+    /// Also filter out the dragons that are already matched with the current user
     /// </summary>
     /// <param name="allDragons">List of all dragons</param>
     /// <param name="currentUserType">Current user's dragon type</param>
     /// <param name="currentUserInterestedTypes">Types of dragons the current user is interested in</param>
     /// <returns>Filtered list of DragonModel</returns>
-    private List<DragonModel> FilterDragons(List<DragonModel> allDragons, EDragonType currentUserType, EDragonType[] currentUserInterestedTypes)
+    private async Task<List<DragonModel>> FilterDragons(List<DragonModel> allDragons, EDragonType currentUserType, EDragonType[] currentUserInterestedTypes)
     {
-        return allDragons
+        List<DragonModel> filteredDragons = new List<DragonModel>();
+        filteredDragons = allDragons
             .Where(dragon => dragon.InterestedTypes.Contains(currentUserType))
             .Where(dragon => currentUserInterestedTypes.Contains(dragon.Type))
             .Where(dragon => dragon.Id != AccountController.Instance.GetAccountID())
             .ToList();
+
+        //Remove the dragons that are already matched with the current user
+        List<MatchModel> matchesWhereCurrentDragonIsInvolved = await GetMatchesWhereDragonIsInvolved(AccountController.Instance.GetAccountID());
+        Debug.Log($"matchesWhereCurrentDragonIsInvolved count: {matchesWhereCurrentDragonIsInvolved.Count}");
+        List<string> dragonsIdAlreadyMatched = new List<string>();
+        foreach (MatchModel model in matchesWhereCurrentDragonIsInvolved)
+        {
+            Debug.Log($"Match {model.Id} found");
+            dragonsIdAlreadyMatched.Add(GetOtherDragonForMatch(model, AccountController.Instance.GetAccountID()));
+        }
+
+        foreach (string Id in dragonsIdAlreadyMatched)
+        {
+            filteredDragons.RemoveAll(x => x.Id == Id);
+            Debug.Log($"Removed dragon {Id} from the filtered dragons");
+        }
+        
+        return filteredDragons;
     }
 
     /// <summary>
@@ -73,12 +94,10 @@ public class MatchController : MonoBehaviour
     /// <param name="_otherDragonId"></param>
     public async Task<bool> UpdateMatch(string _otherDragonId)
     {
-
         string currentUserId = AccountController.Instance.GetAccountID();
         List<string> sortedIds = new List<string> { AccountController.Instance.GetAccountID(), _otherDragonId }.OrderBy(x => x).ToList();
         string matchId = string.Join("_", sortedIds);
         MatchModel match = new MatchModel(matchId);
-
 
         //First we download the Match document from the firestore
         //If the document does not exist, we will create it
@@ -150,5 +169,56 @@ public class MatchController : MonoBehaviour
             Debug.LogException(e);
             return false;
         }
+    }
+
+    /// <summary>
+    /// Get all the matches in which _dragonId is involved.
+    /// </summary>
+    /// <param name="_dragonId"></param>
+    /// <returns></returns>
+    private async Task<List<MatchModel>> GetMatchesWhereDragonIsInvolved(string _dragonId)
+    {
+        //Create the filters to get the matches in which the dragon is involved
+        Filter dragon1Filter = Filter.EqualTo("Dragon1Id", _dragonId);
+        Filter dragon2Filter = Filter.EqualTo("Dragon2Id", _dragonId);
+        Filter[] filters = { dragon1Filter, dragon2Filter };
+        QuerySnapshot docs;
+        try
+        {
+            //Query the matches collection with the filters in the firestore
+            FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+            Query query = db.Collection("matches").Where(Filter.Or(filters));
+            docs = await query.GetSnapshotAsync();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error getting matches where dragon {_dragonId} is involved");
+            Debug.LogException(e);
+            throw;
+        }
+        //Convert the documents to MatchModel and return it
+        List<MatchModel> matchesInWhichDragonIsInvolved = new();
+        foreach (DocumentSnapshot doc in docs.Documents)
+        {
+            MatchModel match = doc.ConvertTo<MatchModel>();
+            matchesInWhichDragonIsInvolved.Add(match);
+        }
+        Debug.Log($"Found {docs.Count} matches where dragon {_dragonId} is involved");
+        return matchesInWhichDragonIsInvolved;
+    }
+
+    /// <summary>
+    /// Use a Match & a DragonId to get the other dragon involved in the match
+    /// As Id of the dragons are sorted alphabetically, we can get the other dragon by checking which Id is not the same as the current dragonId
+    /// </summary>
+    /// <param name="_match"></param>
+    /// <param name="_dragonId"></param>
+    private string GetOtherDragonForMatch(MatchModel _match, string _dragonId)
+    {
+        string matchId = _match.Id;
+        List<string> sortedIds = matchId.Split('_').OrderBy(x => x).ToList();
+        string otherDragonId = sortedIds[0] == _dragonId ? sortedIds[1] : sortedIds[0];
+        Debug.Log($"The other dragon involved in the match is {otherDragonId}");
+        return otherDragonId;
     }
 }

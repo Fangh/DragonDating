@@ -109,12 +109,14 @@ public class DragonController : MonoBehaviour
 
     /// <summary>
     /// Download all Dragons Document from Firestore
+    /// But not the dragons with a status different from AccountCompleted
     /// </summary>
     /// <returns></returns>
     public async Task<List<DragonModel>> ListAllDragons()
     {
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
-        Task<QuerySnapshot> task = db.Collection("dragons").GetSnapshotAsync();
+        Filter onlyCompletedAccount = Filter.EqualTo("Status", EStatus.AccountCompleted); //filter out the dragons that are not completed
+        Task<QuerySnapshot> task = db.Collection("dragons").Where(onlyCompletedAccount).GetSnapshotAsync();
         await task;
         
         if(!task.IsCompletedSuccessfully)
